@@ -1,0 +1,17 @@
+<% content_for :title, @todo.title %>
+
+<div class="form-card">
+  <% if notice.present? %>
+    <div class="notice"><%= notice %></div>
+  <% end %>
+
+  <h1><%= @todo.title %></h1>
+  <p style="color: var(--color-text-muted); margin-top: 8px;">
+    Status: <%= @todo.completed? ? "Completed" : "Pending" %>
+  </p>
+
+  <div class="form-actions" style="margin-top: 24px;">
+    <%= link_to "Edit", edit_todo_path(@todo), class: "btn-primary", style: "text-decoration: none; text-align: center;" %>
+    <%= link_to "Back", todos_path, class: "btn-secondary" %>
+  </div>
+</div>

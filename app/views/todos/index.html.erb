@@ -1,0 +1,50 @@
+<% content_for :title, "Todo App" %>
+
+<div class="app-header">
+  <h1>Todos</h1>
+  <p>Stay organized, get things done.</p>
+</div>
+
+<% if notice.present? %>
+  <div class="notice"><%= notice %></div>
+<% end %>
+
+<%= form_with(model: Todo.new, url: todos_path, method: :post, id: "new-todo-form", html: { class: "add-form" }) do |form| %>
+  <%= form.text_field :title, placeholder: "What needs to be done?", required: true, id: "todo-title" %>
+  <%= form.submit "Add", class: "btn-primary", data: { testid: "add-todo" } %>
+<% end %>
+
+<% if @todos.any? %>
+  <div class="todo-list">
+    <% @todos.each do |todo| %>
+      <div class="todo-item" data-testid="todo-item">
+        <%= button_to toggle_todo_path(todo), method: :patch, class: "todo-toggle #{'completed' if todo.completed?}", data: { testid: "toggle-todo-#{todo.id}" } do %>
+          <%= "\u2713" if todo.completed? %>
+        <% end %>
+
+        <span class="todo-title <%= 'completed' if todo.completed? %>"
+              data-testid="todo-title"
+              data-todo-id="<%= todo.id %>"
+              data-todo-url="<%= todo_path(todo) %>">
+          <%= todo.title %>
+        </span>
+
+        <div class="todo-actions">
+          <%= button_to "Delete", todo_path(todo), method: :delete, class: "btn-link danger", data: { testid: "delete-todo-#{todo.id}", turbo_confirm: "Are you sure?" } %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="todo-footer">
+      <span><%= @todos.count { |t| !t.completed? } %> remaining</span>
+      <span><%= @todos.count { |t| t.completed? } %> completed</span>
+    </div>
+  </div>
+<% else %>
+  <div class="todo-list">
+    <div class="empty-state" data-testid="empty-state">
+      <div class="icon">&#9745;</div>
+      <p>No todos yet. Add one above!</p>
+    </div>
+  </div>
+<% end %>
